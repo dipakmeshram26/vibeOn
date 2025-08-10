@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Instagram-like UI</title>
+<style>
+  /* Reset & base */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0; 
+    background: #000;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    display: flex;
+    height: 100vh;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: 240px;
+    background: #000;
+    border-right: 1px solid #222;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+  }
+  .sidebar nav a {
+    color: #fff;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    font-weight: 600;
+  }
+  .sidebar nav a:hover {
+    color: #0095f6;
+  }
+  .sidebar nav a svg {
+    fill: #fff;
+    width: 24px;
+    height: 24px;
+  }
+
+  /* Stories */
+  .stories {
+    display: flex;
+    overflow-x: auto;
+    padding: 10px 20px;
+    border-bottom: 1px solid #222;
+    background: #000;
+  }
+  .story {
+    margin-right: 15px;
+    text-align: center;
+    font-size: 12px;
+    color: #ccc;
+  }
+  .story img {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 3px solid;
+    padding: 2px;
+    object-fit: cover;
+    cursor: pointer;
+  }
+  /* colorful ring like Instagram */
+  .story img.ring-1 { border-image: linear-gradient(45deg, #feda75, #fa7e1e, #d62976, #962fbf, #4f5bd5) 1; }
+  .story img.ring-2 { border-image: linear-gradient(45deg, #4f5bd5, #962fbf, #d62976, #fa7e1e, #feda75) 1; }
+  .story img.ring-3 { border-image: linear-gradient(45deg, #962fbf, #4f5bd5, #feda75, #fa7e1e, #d62976) 1; }
+
+  /* Main feed */
+  .main-feed {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 20px;
+    background: #000;
+  }
+  .post {
+    background: #121212;
+    margin-bottom: 25px;
+    border-radius: 8px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 0 10px #222;
+  }
+  .post-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px;
+  }
+  .post-header img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .post-header .username {
+    font-weight: bold;
+    font-size: 14px;
+    color: #fff;
+  }
+  .post-image {
+    width: 100%;
+    max-height: 600px;
+    object-fit: cover;
+    display: block;
+  }
+  .post-caption {
+    padding: 10px 15px;
+    font-size: 14px;
+  }
+
+  /* Right sidebar */
+  .right-sidebar {
+    width: 300px;
+    background: #000;
+    border-left: 1px solid #222;
+    padding: 20px;
+  }
+  .profile-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+  .profile-info img {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .profile-info .usernames {
+    color: #fff;
+  }
+  .profile-info .usernames .username {
+    font-weight: bold;
+  }
+  .profile-info .usernames .fullname {
+    font-size: 14px;
+    color: #aaa;
+  }
+  .switch-btn {
+    margin-left: auto;
+    color: #0095f6;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .suggestions {
+    margin-top: 20px;
+  }
+  .suggestions-header {
+    display: flex;
+    justify-content: space-between;
+    color: #aaa;
+    font-weight: 600;
+  }
+  .suggestions-list {
+    margin-top: 10px;
+  }
+  .suggestion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .suggestion-info {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .suggestion-info img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .suggestion-text {
+    font-size: 14px;
+  }
+  .suggestion-text .username {
+    font-weight: bold;
+    color: #fff;
+  }
+  .suggestion-text .subtext {
+    color: #aaa;
+    font-size: 12px;
+  }
+  .follow-btn {
+    color: #0095f6;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+</style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <nav>
+      <a href="#"><svg viewBox="0 0 24 24"><path d="M3 12l9-9 9 9h-6v9h-6v-9z"/></svg> Home</a>
+      <a href="#"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7.5" stroke="white" stroke-width="2" fill="none"/><line x1="21" y1="21" x2="15.8" y2="15.8" stroke="white" stroke-width="2"/></svg> Search</a>
+      <a href="#">Explore</a>
+      <a href="#">Reels</a>
+      <a href="#">Messages</a>
+      <a href="#">Notifications</a>
+      <a href="#">Create</a>
+      <a href="#">Dashboard</a>
+      <a href="#">Profile</a>
+      <a href="#">More</a>
+      <a href="#">Also from Meta</a>
+    </nav>
+  </div>
+
+  <div class="main-feed">
+
+    <div class="stories">
+      <div class="story">
+        <img src="https://randomuser.me/api/portraits/men/11.jpg" alt="story1" class="ring-1" />
+        <div>vickykhark...</div>
+      </div>
+      <div class="story">
+        <img src="https://randomuser.me/api/portraits/men/12.jpg" alt="story2" class="ring-2" />
+        <div>sumit__da...</div>
+      </div>
+      <div class="story">
+        <img src="https://randomuser.me/api/portraits/women/15.jpg" alt="story3" class="ring-3" />
+        <div>eshuuuu_...</div>
+      </div>
+      <div class="story">
+        <img src="https://randomuser.me/api/portraits/men/14.jpg" alt="story4" class="ring-1" />
+        <div>shantanu.s...</div>
+      </div>
+      <div class="story">
+        <img src="https://randomuser.me/api/portraits/men/15.jpg" alt="story5" class="ring-2" />
+        <div>_prashik_1...</div>
+      </div>
+      <div class="story">
+        <img src="https://randomuser.me/api/portraits/women/18.jpg" alt="story6" class="ring-3" />
+        <div>english.gr...</div>
+      </div>
+    </div>
+
+    <!-- Sample post -->
+    <div class="post">
+      <div class="post-header">
+        <img src="https://randomuser.me/api/portraits/men/11.jpg" alt="user" />
+        <div class="username">p.o.p._p.v.c._panel_gpusum_boa</div>
+      </div>
+      <img class="post-image" src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80" alt="post image" />
+      <div class="post-caption">NISHAD JI P O P WALE - पत्थर लगाने का सही तरीका</div>
+    </div>
+
+  </div>
+
+  <div class="right-sidebar">
+    <div class="profile-info">
+      <img src="https://randomuser.me/api/portraits/men/11.jpg" alt="profile" />
+      <div class="usernames">
+        <div class="username">cyb_i_dip</div>
+        <div class="fullname">Dipak Meshram</div>
+      </div>
+      <div class="switch-btn">Switch</div>
+    </div>
+
+    <div class="suggestions">
+      <div class="suggestions-header">
+        <div>Suggested for you</div>
+        <div style="color:#0095f6; cursor:pointer;">See All</div>
+      </div>
+
+      <div class="suggestions-list">
+        <div class="suggestion">
+          <div class="suggestion-info">
+            <img src="https://randomuser.me/api/portraits/men/21.jpg" alt="kejhakr" />
+            <div class="suggestion-text">
+              <div class="username">kejhakr</div>
+              <div class="subtext">Followed by kbhurle and 3 more</div>
+            </div>
+          </div>
+          <div class="follow-btn">Follow</div>
+        </div>
+
+        <div class="suggestion">
+          <div class="suggestion-info">
+            <img src="https://randomuser.me/api/portraits/women/21.jpg" alt="nikya_diwte07" />
+            <div class="suggestion-text">
+              <div class="username">nikya_diwte07</div>
+              <div class="subtext">Suggested for you</div>
+            </div>
+          </div>
+          <div class="follow-btn">Follow</div>
+        </div>
+
+        <div class="suggestion">
+          <div class="suggestion-info">
+            <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="kunal_meshram_148" />
+            <div class="suggestion-text">
+              <div class="username">kunal_meshram_148</div>
+              <div class="subtext">Followed by manik_sss + 3 more</div>
+            </div>
+          </div>
+          <div class="follow-btn">Follow</div>
+        </div>
+
+        <div class="suggestion">
+          <div class="suggestion-info">
+            <img src="https://randomuser.me/api/portraits/women/22.jpg" alt="omyaa_03" />
+            <div class="suggestion-text">
+              <div class="username">omyaa_____03</div>
+              <div class="subtext">Suggested for you</div>
+            </div>
+          </div>
+          <div class="follow-btn">Follow</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
