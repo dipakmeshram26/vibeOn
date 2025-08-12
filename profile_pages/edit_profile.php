@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <label>Profile Picture:</label><br>
     <input type="file" name="profile_picture"><br>
-    <small>Current: <img src="img/profile_img/<?php echo $user['profile_picture'] ?: 'default.png'; ?>" width="50" style="border-radius:50%;"></small><br><br>
+    <small>Current: <img src="../img/profile_img/<?php echo $user['profile_picture'] ?: 'default.png'; ?>" width="50" style="border-radius:50%;"></small><br><br>
 
     <button type="submit">Save Changes</button>
 </form>

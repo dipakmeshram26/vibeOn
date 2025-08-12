@@ -70,6 +70,8 @@ $statuses_stmt->close();
       </div>
     </div>
 
+    <a href="edit_profile.php">edit profile</a>
+
     <!-- Upload status -->
     <div class="card">
       <h3>Add a Status (visible 24 hours)</h3>
