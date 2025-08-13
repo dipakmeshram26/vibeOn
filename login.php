@@ -20,6 +20,8 @@ if (isset($_SESSION['user_id'])) {
         <input type="password" name="password" required><br><br>
 
         <button type="submit">Login</button>
+        <hr>
+        <p>Don't have an account? <a href="Signup.php">SignUp</a></p>
     </form>
 </body>
 </html>

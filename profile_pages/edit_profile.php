@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Profile picture upload
     if (!empty($_FILES['profile_picture']['name'])) {
         $file_name = time() . "_" . basename($_FILES['profile_picture']['name']);
-        $target = "img/profile_img/" . $file_name;
+        $target = "../img/profile_img/" . $file_name;
         move_uploaded_file($_FILES['profile_picture']['tmp_name'], $target);
     } else {
         $file_name = $user['profile_picture']; // Keep old picture
