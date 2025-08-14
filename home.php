@@ -39,6 +39,7 @@ $result = $conn->query("
 
 <head>
     <title>Welcome - VibeOn</title>
+    <link rel="stylesheet" href="sidebar.css">
     <link rel="stylesheet" href="homestyle.css">
 
 </head>
@@ -49,10 +50,11 @@ $result = $conn->query("
         <div class="sidebar-left">
             <h2>VibeOn</h2>
             <ul>
-                <li>🏠 Home</li>
+                <li>  <a href="home.php">🏠 Home</a></li>
                 <li>🔍 Search</li>
                 <li>✉️ Messages</li>
-                <li>👤 Profile</li>
+                <li><a href="profile_pages/profile.php">Profile</a></li>
+                <li><a href="logout.php">Logout</a></li>
             </ul>
         </div>
 
@@ -84,10 +86,9 @@ $result = $conn->query("
             </div>
 
             <h2>Welcome, <?php echo htmlspecialchars($_SESSION['full_name']); ?> 👋</h2>
-            <a href="home.php">Home</a>
-            <p>You are now logged in as <b><?php echo htmlspecialchars($_SESSION['username']); ?></b></p>
-            <a href="profile_pages/profile.php">Profile</a>
-            <a href="logout.php">Logout</a>
+            <!-- <p>You are now logged in as <b><?php echo htmlspecialchars($_SESSION['username']); ?></b></p> -->
+            <!-- <a href="profile_pages/profile.php">Profile</a>
+            <a href="logout.php">Logout</a> -->
 
 
 
