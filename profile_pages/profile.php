@@ -9,12 +9,63 @@ require_once __DIR__ . '/../db.php';
 
 $user_id = $_SESSION['user_id'];
 
+// defaults
+$posts_count = 0;
+$followers_count = 0;
+$following_count = 0;
+
+/* Posts count */
+if ($stmt = $conn->prepare("SELECT COUNT(*) FROM posts WHERE user_id = ?")) {
+  $stmt->bind_param("i", $user_id);
+  $stmt->execute();
+  $stmt->bind_result($posts_count);
+  $stmt->fetch();
+  $stmt->close();
+}
+
+/* Followers count (kitne log aapko follow kar rahe) */
+if ($stmt = $conn->prepare("SELECT COUNT(*) FROM follows WHERE following_id = ?")) {
+  $stmt->bind_param("i", $user_id);
+  $stmt->execute();
+  $stmt->bind_result($followers_count);
+  $stmt->fetch();
+  $stmt->close();
+}
+
+/* Following count (aap kitno ko follow kar rahe) */
+if ($stmt = $conn->prepare("SELECT COUNT(*) FROM follows WHERE follower_id = ?")) {
+  $stmt->bind_param("i", $user_id);
+  $stmt->execute();
+  $stmt->bind_result($following_count);
+  $stmt->fetch();
+  $stmt->close();
+}
+
 // Fetch logged-in user data
 $stmt = $conn->prepare("SELECT id, full_name, username, profile_picture, bio FROM users WHERE id = ?");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $user = $stmt->get_result()->fetch_assoc();
 $stmt->close();
+
+// Check if already following
+$stmt = $conn->prepare("SELECT id FROM follows WHERE follower_id = ? AND following_id = ?");
+$stmt->bind_param("ii", $logged_in_user, $user_id);
+$stmt->execute();
+$stmt->store_result();
+$is_following = $stmt->num_rows > 0;
+$stmt->close();
+
+$posts = [];
+if ($stmt = $conn->prepare("SELECT id, image, caption FROM posts WHERE user_id = ? ORDER BY created_at DESC")) {
+  $stmt->bind_param("i", $user_id);
+  $stmt->execute();
+  $result = $stmt->get_result();
+  while ($row = $result->fetch_assoc()) {
+    $posts[] = $row;
+  }
+  $stmt->close();
+}
 
 // Fetch this user's active statuses (not expired)
 $statuses_stmt = $conn->prepare("
@@ -34,149 +85,10 @@ $statuses_stmt->close();
 <head>
   <meta charset="utf-8">
   <title><?php echo htmlspecialchars($user['username']); ?> — Profile</title>
+  <link rel="stylesheet" href="../sidebar.css">
+  <link rel="stylesheet" href="style.css">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #fafafa;
-      color: #111;
-      padding: 20px;
-    }
 
-    .wrap {
-      max-width: 900px;
-      margin: 0 auto;
-    }
-
-    .profile {
-      display: flex;
-      gap: 20px;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-
-    .profile img {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid #ddd;
-    }
-
-    .profile .info {
-      line-height: 1.2;
-    }
-
-    .profile .info .name {
-      font-size: 20px;
-      font-weight: 700;
-    }
-
-    .profile .info .username {
-      color: #666;
-    }
-
-    .card {
-      background: #fff;
-      padding: 15px;
-      border-radius: 8px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-      margin-bottom: 20px;
-    }
-
-    /* upload form */
-    .upload-form input[type="file"] {
-      display: block;
-      margin-bottom: 10px;
-    }
-
-    .upload-form button {
-      background: #3897f0;
-      color: #fff;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    /* status list */
-    .statuses-grid {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .status-item {
-      width: 110px;
-      text-align: center;
-    }
-
-    .status-thumb {
-      width: 110px;
-      height: 110px;
-      border-radius: 12px;
-      overflow: hidden;
-      background: #eee;
-      display: block;
-      object-fit: cover;
-      border: 2px solid #f09433;
-    }
-
-    .status-meta {
-      font-size: 12px;
-      color: #666;
-      margin-top: 6px;
-    }
-
-    .small-btn {
-      background: #eee;
-      border: 1px solid #ddd;
-      padding: 6px 8px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .profile-header {
-      display: flex;
-      align-items: center;
-      padding: 20px;
-    }
-
-    .profile-pic img {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-    }
-
-    .profile-info {
-      margin-left: 20px;
-    }
-
-    .top-line {
-      display: flex;
-      align-items: center;
-    }
-
-    .top-line h2 {
-      margin-right: 10px;
-    }
-
-    .settings-icon {
-      font-size: 20px;
-      text-decoration: none;
-    }
-
-    .counts {
-      display: flex;
-      gap: 15px;
-      margin: 5px 0;
-    }
-
-    .btn-edit {
-      background: #eee;
-      padding: 5px 10px;
-      border-radius: 5px;
-      text-decoration: none;
-    }
   </style>
 </head>
 
@@ -184,20 +96,32 @@ $statuses_stmt->close();
   <!-- Profile Header -->
   <div class="profile-header">
     <div class="profile-pic">
-      <img src="img/profile_img/<?php echo htmlspecialchars($user['profile_picture']); ?>" alt="Profile">
+      <img src="../img/profile_img/<?php echo htmlspecialchars($user['profile_picture']); ?>" alt="Profile">
     </div>
     <div class="profile-info">
       <div class="top-line">
         <h2><?php echo htmlspecialchars($user['username']); ?></h2>
         <a href="settings.php" class="settings-icon">⚙</a>
       </div>
+
+      
       <div class="counts">
         <span><strong><?php echo $posts_count; ?></strong> posts</span>
-        <span><strong><?php echo $followers_count; ?></strong> followers</span>
-        <span><strong><?php echo $following_count; ?></strong> following</span>
+        <span>
+          <a href="followers.php?id=<?php echo $user_id; ?>">
+            <strong><?php echo $followers_count; ?></strong> followers
+          </a>
+        </span>
+        <span>
+          <a href="following.php?id=<?php echo $user_id; ?>">
+            <strong><?php echo $following_count; ?></strong> following
+          </a>
+        </span>
       </div>
+
       <div>
         <a href="edit_profile.php" class="btn-edit">Edit Profile</a>
+        <a href="upload_post.php"> Create Post</a>
       </div>
     </div>
   </div>
@@ -214,6 +138,17 @@ $statuses_stmt->close();
     </div>
 
     <a href="edit_profile.php">edit profile</a>
+
+    <hr>
+
+    <form action="follow_action.php" method="POST">
+      <input type="hidden" name="following_id" value="<?php echo $user_id; ?>">
+      <?php if ($is_following): ?>
+        <button type="submit" name="unfollow">Unfollow</button>
+      <?php else: ?>
+        <button type="submit" name="follow">Follow</button>
+      <?php endif; ?>
+    </form>
 
     <!-- Upload status -->
     <div class="card">
@@ -266,7 +201,40 @@ $statuses_stmt->close();
       <?php endif; ?>
     </div>
 
+    <!-- Posts section -->
+    <div class="posts-section">
+      <?php if (!empty($posts)): ?>
+        <?php foreach ($posts as $post): ?>
+          <div class="post-item">
+            <img src="../img/posts/<?php echo htmlspecialchars($post['image']); ?>" alt="Post"
+              onclick="openPopup(this.src)">
+
+
+            <!-- <p><?php echo htmlspecialchars($post['caption']); ?></p> -->
+          </div>
+        <?php endforeach; ?>
+      <?php else: ?>
+        <p>No posts yet.</p>
+      <?php endif; ?>
+    </div>
+    <!-- Popup Modal -->
+    <div id="imagePopup" class="popup" onclick="closePopup()">
+      <span class="close">&times;</span>
+      <img class="popup-content" id="popupImage">
+    </div>
+
   </div>
+
+  <script>
+    function openPopup(src) {
+      document.getElementById("imagePopup").style.display = "block";
+      document.getElementById("popupImage").src = src;
+    }
+
+    function closePopup() {
+      document.getElementById("imagePopup").style.display = "none";
+    }
+  </script>
 </body>
 
 </html>

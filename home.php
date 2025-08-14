@@ -50,7 +50,7 @@ $result = $conn->query("
         <div class="sidebar-left">
             <h2>VibeOn</h2>
             <ul>
-                <li>  <a href="home.php">🏠 Home</a></li>
+                <li> <a href="home.php">🏠 Home</a></li>
                 <li>🔍 Search</li>
                 <li>✉️ Messages</li>
                 <li><a href="profile_pages/profile.php">Profile</a></li>
@@ -62,6 +62,16 @@ $result = $conn->query("
 
         <!-- MAIN CONTENT -->
         <div class="main-content">
+
+            <form method="GET" action="search.php" style="margin-bottom:20px;">
+                <input type="text" name="q" placeholder="Search by name or ID..." required
+                    style="padding:8px; width:250px; border:1px solid #ccc; border-radius:5px;">
+                <button type="submit"
+                    style="padding:8px 12px; background:#0095f6; color:white; border:none; border-radius:5px;">
+                    Search
+                </button>
+            </form>
+
 
             <!-- Status Section -->
             <div class="status-section">
