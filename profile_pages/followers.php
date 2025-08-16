@@ -30,7 +30,7 @@ $result = $stmt->get_result();
     <div class="user-list">
         <?php while ($row = $result->fetch_assoc()): ?>
             <div class="user-card">
-                <img src="../uploads/<?php echo $row['profile_picture'] ?: 'default.png'; ?>" alt="">
+                <img src="../img/profile_img/<?php echo $row['profile_picture'] ?: 'default.png'; ?>" alt="">
                 <a href="profile.php?id=<?php echo $row['id']; ?>">
                     <?php echo htmlspecialchars($row['username']); ?>
                 </a>

@@ -9,6 +9,36 @@ require_once __DIR__ . '/../db.php';
 
 $user_id = $_SESSION['user_id'];
 
+// Check if profile is private and viewer is not following
+$stmt = $conn->prepare("SELECT is_private FROM users WHERE id=?");
+$stmt->bind_param("i", $profile_id);
+$stmt->execute();
+$stmt->bind_result($is_private);
+$stmt->fetch();
+$stmt->close();
+
+$can_view = true;
+
+if ($is_private) {
+  $stmt = $conn->prepare("SELECT status FROM follows WHERE follower_id=? AND following_id=?");
+  $stmt->bind_param("ii", $_SESSION['user_id'], $profile_id);
+  $stmt->execute();
+  $stmt->bind_result($status);
+  if ($stmt->fetch()) {
+    if ($status != 'accepted') {
+      $can_view = false;
+    }
+  } else {
+    $can_view = false;
+  }
+}
+
+if (!$can_view) {
+  echo "<p>This account is private. Follow to see their posts.</p>";
+  exit;
+}
+
+
 // defaults
 $posts_count = 0;
 $followers_count = 0;
@@ -23,8 +53,8 @@ if ($stmt = $conn->prepare("SELECT COUNT(*) FROM posts WHERE user_id = ?")) {
   $stmt->close();
 }
 
-/* Followers count (kitne log aapko follow kar rahe) */
-if ($stmt = $conn->prepare("SELECT COUNT(*) FROM follows WHERE following_id = ?")) {
+/* Followers count (kitne log aapko follow kar rahe - sirf accepted) */
+if ($stmt = $conn->prepare("SELECT COUNT(*) FROM follows WHERE following_id = ? AND status = 'accepted'")) {
   $stmt->bind_param("i", $user_id);
   $stmt->execute();
   $stmt->bind_result($followers_count);
@@ -41,8 +71,9 @@ if ($stmt = $conn->prepare("SELECT COUNT(*) FROM follows WHERE follower_id = ?")
   $stmt->close();
 }
 
+
 // Fetch logged-in user data
-$stmt = $conn->prepare("SELECT id, full_name, username, profile_picture, bio FROM users WHERE id = ?");
+$stmt = $conn->prepare("SELECT id, full_name, username, profile_picture, is_private, bio FROM users WHERE id = ?");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $user = $stmt->get_result()->fetch_assoc();
@@ -93,6 +124,18 @@ $statuses_stmt->close();
 </head>
 
 <body>
+
+  <?php if (isset($_GET['updated']) && $_GET['updated'] == 1): ?>
+    <p style="color: green; font-weight: bold;">✅ Profile updated successfully!</p>
+  <?php endif; ?>
+
+
+
+  <!-- Private/Public info -->
+  <p>
+    Account Type:
+    <?php echo $user['is_private'] ? "🔒 Private" : "🌍 Public"; ?>
+  </p>
   <!-- Profile Header -->
   <div class="profile-header">
     <div class="profile-pic">
@@ -104,7 +147,7 @@ $statuses_stmt->close();
         <a href="settings.php" class="settings-icon">⚙</a>
       </div>
 
-      
+
       <div class="counts">
         <span><strong><?php echo $posts_count; ?></strong> posts</span>
         <span>
@@ -141,14 +184,16 @@ $statuses_stmt->close();
 
     <hr>
 
-    <form action="follow_action.php" method="POST">
-      <input type="hidden" name="following_id" value="<?php echo $user_id; ?>">
+    <form action="follow_requests.php" method="POST">
+      <input type="hidden" name="target_id" value="<?php echo $profile_user_id; ?>">
+
       <?php if ($is_following): ?>
         <button type="submit" name="unfollow">Unfollow</button>
       <?php else: ?>
         <button type="submit" name="follow">Follow</button>
       <?php endif; ?>
     </form>
+
 
     <!-- Upload status -->
     <div class="card">

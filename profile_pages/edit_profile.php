@@ -14,12 +14,14 @@ $stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $user = $stmt->get_result()->fetch_assoc();
+$stmt->close();
 
 // Update profile
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $full_name = $_POST['full_name'];
     $username = $_POST['username'];
     $email = $_POST['email'];
+    $is_private = isset($_POST['is_private']) ? 1 : 0;
 
     // Profile picture upload
     if (!empty($_FILES['profile_picture']['name'])) {
@@ -30,17 +32,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $file_name = $user['profile_picture']; // Keep old picture
     }
 
-    $stmt = $conn->prepare("UPDATE users SET full_name = ?, username = ?, email = ?, profile_picture = ? WHERE id = ?");
-    $stmt->bind_param("ssssi", $full_name, $username, $email, $file_name, $user_id);
+    // Update query including privacy setting
+    $stmt = $conn->prepare("UPDATE users SET full_name = ?, username = ?, email = ?, profile_picture = ?, is_private = ? WHERE id = ?");
+    $stmt->bind_param("ssssii", $full_name, $username, $email, $file_name, $is_private, $user_id);
     $stmt->execute();
+    $stmt->close();
 
     $_SESSION['full_name'] = $full_name;
     $_SESSION['username'] = $username;
 
-    header("Location: profile.php");
+    // ✅ redirect with success flag
+    header("Location: profile.php?id=$user_id&updated=1");
     exit;
 }
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -62,6 +68,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <label>Profile Picture:</label><br>
     <input type="file" name="profile_picture"><br>
     <small>Current: <img src="../img/profile_img/<?php echo $user['profile_picture'] ?: 'default.png'; ?>" width="50" style="border-radius:50%;"></small><br><br>
+<!-- Privacy Toggle -->
+    <label>
+        <input type="checkbox" name="is_private" value="1" <?php if ($user['is_private']) echo "checked"; ?>>
+        Private Account
+    </label><br><br>
+
 
     <button type="submit">Save Changes</button>
 </form>
