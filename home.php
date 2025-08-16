@@ -111,14 +111,23 @@ $result = $conn->query("
                         <b><?php echo htmlspecialchars($row['username']); ?></b>
                     </div>
 
-                    <img class='post-image' src='img/posts/<?php echo htmlspecialchars($row['image']); ?>' alt="Post Image">
+                    <!-- Post Image (onclick open modal) -->
+                    <img class='post-image' src='img/posts/<?php echo htmlspecialchars($row['image']); ?>' alt="Post Image"
+                        onclick="openPostModal(
+            'img/posts/<?php echo htmlspecialchars($row['image']); ?>',
+            '<?php echo htmlspecialchars($row['username']); ?>',
+            '<?php echo !empty($row['caption']) ? htmlspecialchars($row['caption']) : ""; ?>',
+            '<?php echo $row['id']; ?>'
+         )">
 
                     <?php if (!empty($row['caption'])): ?>
                         <p><?php echo htmlspecialchars($row['caption']); ?></p>
                     <?php endif; ?>
 
                     <button class="like-btn" data-post-id="<?php echo $row['id']; ?>">❤️ Like</button>
-                    <span id="like-count-<?php echo $row['id']; ?>"><?php echo $row['like_count']; ?></span>
+                    <div id="totle_likes">
+                        <span id="like-count-<?php echo $row['id']; ?>"><?php echo $row['like_count']; ?></span>
+                    </div>
 
                     <form class="comment-form" data-post-id="<?php echo $row['id']; ?>">
                         <input type="text" name="comment" placeholder="Add a comment..." required>
@@ -132,20 +141,54 @@ $result = $conn->query("
                     <div class="comments" id="comments-<?php echo $row['id']; ?>">
                         <?php
                         $comments_result = $conn->query("
-                    SELECT comments.comment, users.username 
-                    FROM comments 
-                    JOIN users ON comments.user_id = users.id 
-                    WHERE comments.post_id = " . intval($row['id']) . " 
-                    ORDER BY comments.created_at ASC
-                ");
+            SELECT comments.comment, users.username 
+            FROM comments 
+            JOIN users ON comments.user_id = users.id 
+            WHERE comments.post_id = " . intval($row['id']) . " 
+            ORDER BY comments.created_at ASC
+        ");
                         while ($comment = $comments_result->fetch_assoc()) {
                             echo "<p><b>" . htmlspecialchars($comment['username']) . ":</b> " . htmlspecialchars($comment['comment']) . "</p>";
                         }
                         ?>
                     </div>
                 </div>
+
             <?php endwhile; ?>
+
+            <!-- Post Modal -->
+            <div id="postModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closePostModal()">&times;</span>
+
+                    <div class="modal-left">
+                        <img id="modalImage" src="" alt="Post Image">
+                    </div>
+
+                    <div class="modal-right">
+                        <div class="modal-header">
+                            <img src="img/default.png" width="40" class="profile-pic">
+                            <b id="modalUser"></b>
+                        </div>
+
+                        <p id="modalCaption"></p>
+
+                        <div class="modal-actions">❤️ 👍 💬</div>
+
+                        <div class="modal-comments" id="modalComments"></div>
+
+                        <form class="comment-form">
+                            <input type="text" placeholder="Add a comment...">
+                            <button type="submit">Post</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+
         </div>
+
     </div>
 
 
@@ -197,6 +240,30 @@ $result = $conn->query("
             });
         });
     </script>
+
+    <script>
+        function openPostModal(imageUrl, username, caption, postId) {
+            document.getElementById("modalImage").src = imageUrl;
+            document.getElementById("modalUser").innerText = username;
+            document.getElementById("modalCaption").innerText = caption;
+
+            // Load comments dynamically if needed (AJAX call example)
+            fetch("get_comments.php?post_id=" + postId)
+                .then(res => res.text())
+                .then(data => {
+                    document.getElementById("modalComments").innerHTML = data;
+                });
+
+            document.getElementById("postModal").style.display = "flex";
+        }
+
+        function closePostModal() {
+            document.getElementById("postModal").style.display = "none";
+        }
+
+
+    </script>
+
 
 </body>
 
