@@ -49,13 +49,15 @@ $result = $conn->query("
         <!-- LEFT SIDEBAR -->
         <div class="sidebar-left">
             <h2>VibeOn</h2>
-            <ul>
-                <li> <a href="home.php">🏠 Home</a></li>
-                <li>🔍 Search</li>
-                <li>✉️ Messages</li>
-                <li><a href="profile_pages/profile.php">Profile</a></li>
-                <li><a href="logout.php">Logout</a></li>
-            </ul>
+            <div class="nav">
+                <a href="home.php">Home</a>
+                <a href="home.php">Search</a>
+                <a href="home.php">Message</a>
+                <a href="home.php">Notification</a>
+                <a href="home.php">More</a>
+                <a href="profile_pages/profile.php">Profile</a>
+                <a href="logout.php">Logout</a>
+            </div>
         </div>
 
 

@@ -5,22 +5,49 @@ body {
 }
 /* LEFT SIDEBAR */
 .sidebar-left {
-    width: 10%;
-    background: #252525;
-    padding: 20px;
+    width: 15%;
+    background: #252525a1;
+    padding: 10px;
     height: 100vh;
     position: fixed;
         z-index: 10;
 left: 0;
     top: 0;
+    border-right: 0.5px solid rgba(136, 133, 133, 0.81);
 }
 
+.sidebar-left h2{
+    margin: 35px 15px;
+}
 .sidebar-left ul {
     list-style: none;
     padding: 0;
+    /* height: 100%; */
 }
 
-.sidebar-left li {
-    margin: 15px 0;
+.sidebar-left .nav {
+    
     cursor: pointer;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+     
+}
+
+.sidebar-left .nav a{
+    text-decoration: none;
+    padding: 13px 10px;
+    font-size: 1em;
+    border-radius: 7px;
+   border-bottom: transparent;
+    color: rgb(207, 209, 212);
+    transition: 0.3s ease-in-out;
+}
+
+.sidebar-left .nav a:hover{
+   background-color: #000;
+   font-weight: bold;
+   color: white;
+   border-bottom: 0.5px solid rgba(136, 133, 133, 0.81);;
 }
