@@ -23,6 +23,28 @@ if (!$user) {
 // Account type
 $is_private = $user['is_private']; // 0 = public, 1 = private
 
+
+$current_user_id = $_SESSION['user_id'];
+$profile_id = $_GET['id']; // jiski profile khol rahe hai
+
+// Fetch profile user info
+$stmt = $conn->prepare("SELECT id, username, is_private FROM users WHERE id = ?");
+$stmt->bind_param("i", $profile_id);
+$stmt->execute();
+$profile = $stmt->get_result()->fetch_assoc();
+
+// Check friendship (agar follow system hai to follow table check karo)
+// Check friendship (accepted follow relation hai ya nahi)
+$stmt = $conn->prepare("SELECT 1 FROM follows 
+                        WHERE follower_id = ? AND following_id = ? 
+                        AND status = 'accepted'");
+$stmt->bind_param("ii", $current_user_id, $profile_id);
+$stmt->execute();
+$is_friend = $stmt->get_result()->num_rows > 0;
+
+
+
+
 // Posts
 $post_sql = "SELECT * FROM posts WHERE user_id = ? ORDER BY created_at DESC";
 $stmt = $conn->prepare($post_sql);
@@ -155,6 +177,34 @@ $highlights = $stmt->get_result();
             <?php endif; ?>
 
 
+            <?php if ($profile['is_private'] == 0): ?>
+                <!-- Public profile → msg button hamesha -->
+                <button onclick="openChatBox(<?php echo $profile_id; ?>)">Message</button>
+
+            <?php elseif ($profile['is_private'] == 1 && $is_friend): ?>
+                <!-- Private but friend hai -->
+                <button onclick="openChatBox(<?php echo $profile_id; ?>)">Message</button>
+
+            <?php else: ?>
+                <!-- Private + not friend → no button -->
+                <p>This account is private.</p>
+            <?php endif; ?>
+
+
+            <div id="chatBox"
+                style="display:none; position:fixed; bottom:20px; right:20px; width:300px; background:#fff; border:1px solid #ccc; border-radius:10px; padding:10px;">
+                <div id="chatMessages"
+                    style="height:200px; overflow-y:auto; border-bottom:1px solid #ddd; margin-bottom:10px;"></div>
+                <form id="chatForm">
+                    <input type="hidden" name="receiver_id" id="receiver_id">
+                    <input type="text" name="message" id="messageInput" placeholder="Type a message..." required
+                        style="width:80%;">
+                    <button type="submit">Send</button>
+                </form>
+            </div>
+
+
+
             <div class="stats">
                 <span><b><?= $posts->num_rows ?></b> posts</span>
                 <span><b><?= $follower_count ?></b> followers</span>
@@ -184,6 +234,34 @@ $highlights = $stmt->get_result();
             <?php endwhile; ?>
         <?php endif; ?>
     </div>
+
+    <script>
+        function openChatBox(userId) {
+            document.getElementById('chatBox').style.display = 'block';
+            document.getElementById('receiver_id').value = userId;
+            loadMessages(userId);
+        }
+
+        function loadMessages(userId) {
+            fetch("load_messages.php?user=" + userId)
+                .then(res => res.text())
+                .then(data => {
+                    document.getElementById("chatMessages").innerHTML = data;
+                });
+        }
+
+        document.getElementById("chatForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+            let formData = new FormData(this);
+            fetch("send_message.php", { method: "POST", body: formData })
+                .then(() => {
+                    document.getElementById("messageInput").value = "";
+                    loadMessages(formData.get("receiver_id"));
+                });
+        });
+    </script>
+
+
 
     <script>
         function toggleFollow() {
@@ -225,6 +303,8 @@ $highlights = $stmt->get_result();
                 });
         }
     </script>
+
+
 
 </body>
 

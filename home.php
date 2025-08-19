@@ -187,6 +187,7 @@ $result = $conn->query("
                 </div>
             </div>
 
+            <?php include 'messages/messages_box.php'; ?>
 
 
         </div>
