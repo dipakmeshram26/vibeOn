@@ -189,10 +189,58 @@ $result = $conn->query("
 
             <?php include 'messages/messages_box.php'; ?>
 
+ 
+<!-- 
+            kall  krenge  -->
+
+            <!-- <div id="chatBox" style="border:1px solid #ccc; padding:10px; height:300px; overflow-y:scroll;"></div>
+
+            <input type="text" id="msgInput" placeholder="Type a message...">
+            <button onclick="sendMessage()">Send</button> -->
 
         </div>
 
+
     </div>
+
+
+    <script>
+        let profileId = <?php echo $profile_id; ?>; // jiski profile khol rakhi hai
+
+        // Messages fetch karna
+        function loadMessages() {
+            fetch("get_messages.php?profile_id=" + profileId)
+                .then(res => res.json())
+                .then(data => {
+                    let chatBox = document.getElementById("chatBox");
+                    chatBox.innerHTML = "";
+                    data.forEach(msg => {
+                        let div = document.createElement("div");
+                        div.textContent = (msg.sender_id == <?php echo $current_user_id; ?> ? "You: " : "Them: ") + msg.message;
+                        chatBox.appendChild(div);
+                    });
+                });
+        }
+
+        // Message bhejna
+        function sendMessage() {
+            let msg = document.getElementById("msgInput").value;
+            if (msg.trim() === "") return;
+            fetch("send_message.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: "receiver_id=" + profileId + "&message=" + encodeURIComponent(msg)
+            }).then(() => {
+                document.getElementById("msgInput").value = "";
+                loadMessages(); // refresh after sending
+            });
+        }
+
+        // Auto refresh every 2s
+        setInterval(loadMessages, 2000);
+        loadMessages();
+    </script>
+
 
 
     <script>

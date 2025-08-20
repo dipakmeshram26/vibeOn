@@ -176,33 +176,10 @@ $highlights = $stmt->get_result();
                 <?php endif; ?>
             <?php endif; ?>
 
-
-            <?php if ($profile['is_private'] == 0): ?>
-                <!-- Public profile → msg button hamesha -->
-                <button onclick="openChatBox(<?php echo $profile_id; ?>)">Message</button>
-
-            <?php elseif ($profile['is_private'] == 1 && $is_friend): ?>
-                <!-- Private but friend hai -->
-                <button onclick="openChatBox(<?php echo $profile_id; ?>)">Message</button>
-
-            <?php else: ?>
-                <!-- Private + not friend → no button -->
-                <p>This account is private.</p>
-            <?php endif; ?>
+            <button onclick="openChatBox(<?php echo $profile_id; ?>)">Message</button>
 
 
-            <div id="chatBox"
-                style="display:none; position:fixed; bottom:20px; right:20px; width:300px; background:#fff; border:1px solid #ccc; border-radius:10px; padding:10px;">
-                <div id="chatMessages"
-                    style="height:200px; overflow-y:auto; border-bottom:1px solid #ddd; margin-bottom:10px;"></div>
-                <form id="chatForm">
-                    <input type="hidden" name="receiver_id" id="receiver_id">
-                    <input type="text" name="message" id="messageInput" placeholder="Type a message..." required
-                        style="width:80%;">
-                    <button type="submit">Send</button>
-                </form>
-            </div>
-
+       
 
 
             <div class="stats">
