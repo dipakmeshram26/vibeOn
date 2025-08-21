@@ -52,7 +52,8 @@ $result = $conn->query("
             <div class="nav">
                 <a href="home.php">Home</a>
                 <a href="home.php">Search</a>
-                <a href="home.php">Message</a>
+
+                <a href="/vibeOn/chat/chat_list.php">Messages</a>
                 <a href="home.php">Notification</a>
                 <a href="home.php">More</a>
                 <a href="profile_pages/profile.php">Profile</a>
@@ -187,10 +188,10 @@ $result = $conn->query("
                 </div>
             </div>
 
-           
 
- 
-<!-- 
+
+
+            <!-- 
             kall  krenge  -->
 
             <!-- <div id="chatBox" style="border:1px solid #ccc; padding:10px; height:300px; overflow-y:scroll;"></div>
@@ -204,7 +205,30 @@ $result = $conn->query("
     </div>
 
 
-     
+    <div id="notification" style="display:none; 
+    position:fixed; top:10px; right:10px; 
+    background:#333; color:#fff; padding:10px 20px; 
+    border-radius:10px; z-index:9999;">
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function checkNewMsg() {
+            $.get("/vibeOn/chat/check_new.php", function (data) {
+                let msg = JSON.parse(data);
+                if (msg.content) {
+                    $("#notification").text(msg.username + ": " + msg.content).fadeIn();
+
+                    setTimeout(function () {
+                        $("#notification").fadeOut();
+                    }, 5000); // 5 sec
+                }
+            });
+        }
+
+        setInterval(checkNewMsg, 5000); // हर 5 सेकंड में check
+    </script>
+
 
 
 
