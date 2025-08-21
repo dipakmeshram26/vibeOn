@@ -79,7 +79,19 @@ $stmt = $conn->prepare($highlight_sql);
 $stmt->bind_param("i", $profile_id);
 $stmt->execute();
 $highlights = $stmt->get_result();
+
+
+
+// Profile details fetch
+$stmt = $conn->prepare("SELECT username, is_private FROM users WHERE id = ?");
+$stmt->bind_param("i", $profile_id);
+$stmt->execute();
+$profile = $stmt->get_result()->fetch_assoc();
+
+
 ?>
+
+
 <!DOCTYPE html>
 <html>
 
@@ -179,7 +191,7 @@ $highlights = $stmt->get_result();
             <button onclick="openChatBox(<?php echo $profile_id; ?>)">Message</button>
 
 
-       
+
 
 
             <div class="stats">
@@ -212,30 +224,68 @@ $highlights = $stmt->get_result();
         <?php endif; ?>
     </div>
 
+
+    <h2><?php echo htmlspecialchars($profile['username']); ?>'s Profile</h2>
+
+    <?php
+    // Private check
+    if ($profile['is_private']) {
+        // check follow status
+        $stmt = $conn->prepare("SELECT 1 FROM follows WHERE follower_id = ? AND following_id = ?");
+        $stmt->bind_param("ii", $current_user_id, $profile_id);
+        $stmt->execute();
+        $is_friend = $stmt->get_result()->num_rows > 0;
+
+        if ($is_friend) {
+            echo '<button onclick="openChatBox(' . $profile_id . ')">Message</button>';
+        } else {
+            echo '<button onclick="alert(\'This profile is private. Please send a follow request.\')">Message</button>';
+        }
+    } else {
+        // Public account
+        echo '<button onclick="openChatBox(' . $profile_id . ')">Message</button>';
+    }
+    ?>
+
+    <!-- Chat Box Container -->
+    <div id="chatBox"
+        style="display:none; position:fixed; bottom:20px; right:20px; width:300px; border:1px solid #ccc; background:#fff; padding:10px;">
+        <div id="chatMessages"
+            style="height:200px; overflow-y:scroll; border-bottom:1px solid #ddd; margin-bottom:10px;"></div>
+        <form onsubmit="sendMessage(<?php echo $profile_id; ?>); return false;">
+            <input type="text" id="chatInput" placeholder="Type a message..." style="width:80%">
+            <button type="submit">Send</button>
+        </form>
+        <button onclick="document.getElementById('chatBox').style.display='none'">Close</button>
+    </div>
+
     <script>
-        function openChatBox(userId) {
-            document.getElementById('chatBox').style.display = 'block';
-            document.getElementById('receiver_id').value = userId;
-            loadMessages(userId);
+        function openChatBox(profileId) {
+            document.getElementById("chatBox").style.display = "block";
+            loadMessages(profileId);
         }
 
-        function loadMessages(userId) {
-            fetch("load_messages.php?user=" + userId)
+        // Fetch messages
+        function loadMessages(profileId) {
+            fetch("load_messages.php?receiver_id=" + profileId)
                 .then(res => res.text())
                 .then(data => {
                     document.getElementById("chatMessages").innerHTML = data;
                 });
         }
 
-        document.getElementById("chatForm").addEventListener("submit", function (e) {
-            e.preventDefault();
-            let formData = new FormData(this);
-            fetch("send_message.php", { method: "POST", body: formData })
-                .then(() => {
-                    document.getElementById("messageInput").value = "";
-                    loadMessages(formData.get("receiver_id"));
-                });
-        });
+        // Send message
+        function sendMessage(profileId) {
+            let msg = document.getElementById("chatInput").value;
+            fetch("send_message.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: "receiver_id=" + profileId + "&message=" + encodeURIComponent(msg)
+            }).then(() => {
+                document.getElementById("chatInput").value = "";
+                loadMessages(profileId);
+            });
+        }
     </script>
 
 
