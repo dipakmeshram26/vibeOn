@@ -111,7 +111,10 @@ $result = $conn->query("
                     <div class='post-header'>
                         <img src='img/profile_img/<?php echo htmlspecialchars($row['profile_picture']); ?>' width='40'
                             height='40' alt="Profile Picture">
-                        <b><?php echo htmlspecialchars($row['username']); ?></b>
+                        <a href="view_profiles/view_profile.php?id=<?php echo urlencode($row['user_id']); ?>">
+                            <?php echo htmlspecialchars($row['username']); ?>
+                        </a>
+
                     </div>
 
                     <!-- Post Image (onclick open modal) -->
