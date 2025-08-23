@@ -53,8 +53,8 @@ $result = $conn->query("
                 <a href="home.php">Home</a>
                 <a href="home.php">Search</a>
 
-                <a href="/vibeOn/chat/chat_list.php">Messages</a>
-                <a href="home.php">Notification</a>
+                <a href="/vibeOn/chat/chat_list2.php">Messages</a>
+                <a href=""><button onclick="openNotificationPanel()">🔔 Notifications</button></a>
                 <a href="home.php">More</a>
                 <a href="profile_pages/profile.php">Profile</a>
                 <a href="logout.php">Logout</a>
@@ -194,21 +194,82 @@ $result = $conn->query("
 
 
 
-            <!-- 
-            kall  krenge  -->
 
-            <!-- <div id="chatBox" style="border:1px solid #ccc; padding:10px; height:300px; overflow-y:scroll;"></div>
-
-            <input type="text" id="msgInput" placeholder="Type a message...">
-            <button onclick="sendMessage()">Send</button> -->
 
         </div>
 
+        <div class="right-sidebar">
+            <div class="right-sidebar">
+                <h3>Friend Requests</h3>
+                <div id="requestsTab" class="tab-content"></div>
 
+                <hr>
+
+                <h3>Notifications</h3>
+                <div id="notificationsTab" class="tab-content"></div>
+            </div>
+
+        </div>
     </div>
 
+    <script>
+        function loadData() {
+            fetch("notifications.php")
+                .then(res => res.json())
+                .then(data => {
+                    // Friend Requests
+                    let reqHTML = "";
+                    data.friend_requests.forEach(r => {
+                        reqHTML += `
+                    <div class="request">
+                        <img src="${r.profile_picture ? 'img/profile_img/' + r.profile_picture : 'img/default.png'}" ...>
 
-    <div id="notification" style="display:none; 
+                        <b>${r.username}</b>
+                        <button onclick="acceptRequest(${r.id})">Accept</button>
+                        <button onclick="rejectRequest(${r.id})">Reject</button>
+                    </div>
+                `;
+                    });
+                    document.getElementById("requestsTab").innerHTML = reqHTML || "<p>No friend requests</p>";
+
+                    // Notifications
+                    let notifHTML = "";
+                    data.notifications.forEach(n => {
+                        notifHTML += `
+                    <div class="notification ${n.is_read ? '' : 'unread'}">
+                        ${n.message} <br>
+                        <small>${n.created_at}</small>
+                    </div>
+                `;
+                    });
+                    document.getElementById("notificationsTab").innerHTML = notifHTML || "<p>No notifications</p>";
+                });
+        }
+
+        function acceptRequest(id) {
+            fetch("request_action.php", {
+                method: "POST",
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: "id=" + id + "&action=accept"
+            }).then(() => loadData());
+        }
+
+        function rejectRequest(id) {
+            fetch("request_action.php", {
+                method: "POST",
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: "id=" + id + "&action=reject"
+            }).then(() => loadData());
+        }
+
+
+        window.onload = loadData;
+    </script>
+
+
+
+
+    <!-- <div id="notification" style="display:none; 
     position:fixed; top:10px; right:10px; 
     background:#333; color:#fff; padding:10px 20px; 
     border-radius:10px; z-index:9999;">
@@ -230,7 +291,7 @@ $result = $conn->query("
         }
 
         setInterval(checkNewMsg, 5000); // हर 5 सेकंड में check
-    </script>
+    </script> -->
 
 
 

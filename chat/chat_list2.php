@@ -83,8 +83,16 @@ $current_user = (int) $_SESSION['user_id'];
             border-bottom: 1px solid #222;
             font-weight: 600;
             background: #201f1fff;
-            /* box-shadow: 0 0 10px white; */
+            display: flex;
             border: 0.3px solid white;
+            align-items: center;
+
+        }
+
+        .chatimg img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
 
         }
 
@@ -193,8 +201,8 @@ $current_user = (int) $_SESSION['user_id'];
         <div class="sidebar-left">
             <h2>VibeOn</h2>
             <div class="nav">
-                <a href="home.php">Home</a>
-                <a href="home.php">Search</a>
+                <a href="../home.php">Home</a>
+                <a href="..//home.php">Search</a>
 
                 <a href="/vibeOn/chat/chat_list.php">Messages</a>
                 <a href="home.php">Notification</a>
@@ -288,7 +296,13 @@ $current_user = (int) $_SESSION['user_id'];
             chatWith = uid;
             lastId = 0;
             document.getElementById("chatWrap").style.display = "flex";
-            document.getElementById("chatTop").textContent = uname;
+            document.getElementById("chatTop").innerHTML = `
+                <div class="chatimg"> <img src="../img/profile_img/${upic}" alt="profile"></div>
+                <div class="info">
+                     <div class="username">${uname}</div>
+                    <div class="extra">Chatting now</div>
+                </div>
+            `;
             document.getElementById("chatBox").innerHTML = "";
             loadMessages(true);
 

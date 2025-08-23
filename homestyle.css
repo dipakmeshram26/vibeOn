@@ -67,7 +67,7 @@ body {
     margin-left: 19%;
     /* padding-left: 40px; */
     width: 78%;
-    height: 100vh;
+    /* height: 100vh; */
     display: flex
 ;
     flex-direction: column;
@@ -317,3 +317,42 @@ body {
   overflow-y: auto;
   margin: 10px 0;
 }
+
+.right-sidebar {
+    position: fixed;
+    right: 0;
+    top: 60px;
+    width: 300px;
+    height: calc(100% - 60px);
+    background: #222020;
+    border-left: 1px solid #ddd;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+.right-sidebar h3 {
+    font-size: 16px;
+    margin-top: 15px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 4px;
+}
+
+.request, .notification {
+    padding: 8px;
+    margin-bottom: 6px;
+    border-radius: 5px;
+    background: #232323;
+    border: 1px solid #ddd;
+}
+
+.request button {
+    margin-left: 5px;
+    padding: 3px 6px;
+    font-size: 12px;
+}
+
+.notification.unread {
+    background: #171818; /* unread ke liye highlight */
+}
+
