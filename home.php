@@ -46,6 +46,7 @@ $result = $conn->query("
 
 <body>
     <div class="container">
+
         <!-- LEFT SIDEBAR -->
         <div class="sidebar-left">
             <h2>VibeOn</h2>
@@ -54,162 +55,162 @@ $result = $conn->query("
                 <a href="home.php">Search</a>
 
                 <a href="/vibeOn/chat/chat_list2.php">Messages</a>
-                <a href=""><button onclick="openNotificationPanel()">🔔 Notifications</button></a>
+                <a href=""> Notifications</a>
                 <a href="home.php">More</a>
                 <a href="profile_pages/profile.php">Profile</a>
                 <a href="logout.php">Logout</a>
             </div>
         </div>
 
+        <div class="home_center">
+
+            <!-- MAIN CONTENT -->
+            <div class="main-content">
+
+                <form method="GET" action="search.php" style="margin-bottom:20px;">
+                    <input type="text" name="q" placeholder="Search by name or ID..." required
+                        style="padding:8px; width:250px; border:1px solid #ccc; border-radius:5px;">
+                    <button type="submit"
+                        style="padding:8px 12px; background:#0095f6; color:white; border:none; border-radius:5px;">
+                        Search
+                    </button>
+                </form>
 
 
-        <!-- MAIN CONTENT -->
-        <div class="main-content">
-
-            <form method="GET" action="search.php" style="margin-bottom:20px;">
-                <input type="text" name="q" placeholder="Search by name or ID..." required
-                    style="padding:8px; width:250px; border:1px solid #ccc; border-radius:5px;">
-                <button type="submit"
-                    style="padding:8px 12px; background:#0095f6; color:white; border:none; border-radius:5px;">
-                    Search
-                </button>
-            </form>
-
-
-            <!-- Status Section -->
-            <div class="status-section">
-                <?php while ($status = $statuses->fetch_assoc()): ?>
-                    <div class="status"
-                        onclick="openStatus('<?php echo htmlspecialchars($status['image']); ?>', '<?php echo htmlspecialchars($status['username']); ?>')">
-                        <img src="img/profile_img/<?php echo htmlspecialchars($status['profile_picture']); ?>"
-                            alt="Profile">
-                        <p><?php echo htmlspecialchars($status['username']); ?></p>
-                    </div>
-                <?php endwhile; ?>
-            </div>
-
-
-            <!-- Popup -->
-            <div id="statusPopup" class="popup" onclick="closeStatus(event)">
-                <div class="popup-content">
-                    <span class="close-btn" onclick="closeStatus(event)">&times;</span>
-                    <img id="popupImage" src="" alt="Status Image">
-                    <p id="popupUsername"></p>
+                <!-- Status Section -->
+                <div class="status-section">
+                    <?php while ($status = $statuses->fetch_assoc()): ?>
+                        <div class="status"
+                            onclick="openStatus('<?php echo htmlspecialchars($status['image']); ?>', '<?php echo htmlspecialchars($status['username']); ?>')">
+                            <img src="img/profile_img/<?php echo htmlspecialchars($status['profile_picture']); ?>"
+                                alt="Profile">
+                            <p><?php echo htmlspecialchars($status['username']); ?></p>
+                        </div>
+                    <?php endwhile; ?>
                 </div>
-            </div>
 
-            <h2>Welcome, <?php echo htmlspecialchars($_SESSION['full_name']); ?> 👋</h2>
-            <!-- <p>You are now logged in as <b><?php echo htmlspecialchars($_SESSION['username']); ?></b></p> -->
-            <!-- <a href="profile_pages/profile.php">Profile</a>
+
+                <!-- Popup -->
+                <div id="statusPopup" class="popup" onclick="closeStatus(event)">
+                    <div class="popup-content">
+                        <span class="close-btn" onclick="closeStatus(event)">&times;</span>
+                        <img id="popupImage" src="" alt="Status Image">
+                        <p id="popupUsername"></p>
+                    </div>
+                </div>
+
+                <h2>Welcome, <?php echo htmlspecialchars($_SESSION['full_name']); ?> 👋</h2>
+                <!-- <p>You are now logged in as <b><?php echo htmlspecialchars($_SESSION['username']); ?></b></p> -->
+                <!-- <a href="profile_pages/profile.php">Profile</a>
             <a href="logout.php">Logout</a> -->
 
 
 
 
-            <?php while ($row = $result->fetch_assoc()): ?>
-                <div class='post'>
-                    <div class='post-header'>
-                        <img src='img/profile_img/<?php echo htmlspecialchars($row['profile_picture']); ?>' width='40'
-                            height='40' alt="Profile Picture">
-                        <a href="view_profiles/view_profile.php?id=<?php echo urlencode($row['user_id']); ?>">
-                            <?php echo htmlspecialchars($row['username']); ?>
-                        </a>
+                <?php while ($row = $result->fetch_assoc()): ?>
+                    <div class='post'>
+                        <div class='post-header'>
+                            <img src='img/profile_img/<?php echo htmlspecialchars($row['profile_picture']); ?>' width='40'
+                                height='40' alt="Profile Picture">
+                            <a href="view_profiles/view_profile.php?id=<?php echo urlencode($row['user_id']); ?>">
+                                <?php echo htmlspecialchars($row['username']); ?>
+                            </a>
 
-                    </div>
+                        </div>
 
-                    <!-- Post Image (onclick open modal) -->
-                    <img class='post-image' src='img/posts/<?php echo htmlspecialchars($row['image']); ?>' alt="Post Image"
-                        onclick="openPostModal(
+                        <!-- Post Image (onclick open modal) -->
+                        <img class='post-image' src='img/posts/<?php echo htmlspecialchars($row['image']); ?>'
+                            alt="Post Image" onclick="openPostModal(
             'img/posts/<?php echo htmlspecialchars($row['image']); ?>',
             '<?php echo htmlspecialchars($row['username']); ?>',
             '<?php echo !empty($row['caption']) ? htmlspecialchars($row['caption']) : ""; ?>',
             '<?php echo $row['id']; ?>'
          )">
 
-                    <?php if (!empty($row['caption'])): ?>
-                        <p><?php echo htmlspecialchars($row['caption']); ?></p>
-                    <?php endif; ?>
+                        <?php if (!empty($row['caption'])): ?>
+                            <p><?php echo htmlspecialchars($row['caption']); ?></p>
+                        <?php endif; ?>
 
-                    <button class="like-btn" data-post-id="<?php echo $row['id']; ?>">❤️ Like</button>
-                    <div id="totle_likes">
-                        <span id="like-count-<?php echo $row['id']; ?>"><?php echo $row['like_count']; ?></span>
-                    </div>
+                        <button class="like-btn" data-post-id="<?php echo $row['id']; ?>">❤️ Like</button>
+                        <div id="totle_likes">
+                            <span id="like-count-<?php echo $row['id']; ?>"><?php echo $row['like_count']; ?></span>
+                        </div>
 
-                    <form class="comment-form" data-post-id="<?php echo $row['id']; ?>">
-                        <input type="text" name="comment" placeholder="Add a comment..." required>
-                        <button type="submit">Post</button>
-                    </form>
+                        <form class="comment-form" data-post-id="<?php echo $row['id']; ?>">
+                            <input type="text" name="comment" placeholder="Add a comment..." required>
+                            <button type="submit">Post</button>
+                        </form>
 
-                    <div>
-                        Comments (<?php echo $row['comment_count']; ?>)
-                    </div>
+                        <div>
+                           View Comments (<?php echo $row['comment_count']; ?>)
+                        </div>
 
-                    <div class="comments" id="comments-<?php echo $row['id']; ?>">
-                        <?php
-                        $comments_result = $conn->query("
+                        <!-- <div class="comments" id="comments-<?php echo $row['id']; ?>">
+                            <?php
+                            $comments_result = $conn->query("
             SELECT comments.comment, users.username 
             FROM comments 
             JOIN users ON comments.user_id = users.id 
             WHERE comments.post_id = " . intval($row['id']) . " 
             ORDER BY comments.created_at ASC
         ");
-                        while ($comment = $comments_result->fetch_assoc()) {
-                            echo "<p><b>" . htmlspecialchars($comment['username']) . ":</b> " . htmlspecialchars($comment['comment']) . "</p>";
-                        }
-                        ?>
-                    </div>
-                </div>
-
-            <?php endwhile; ?>
-
-            <!-- Post Modal -->
-            <div id="postModal" class="modal">
-                <div class="modal-content">
-                    <span class="close" onclick="closePostModal()">&times;</span>
-
-                    <div class="modal-left">
-                        <img id="modalImage" src="" alt="Post Image">
+                            while ($comment = $comments_result->fetch_assoc()) {
+                                echo "<p><b>" . htmlspecialchars($comment['username']) . ":</b> " . htmlspecialchars($comment['comment']) . "</p>";
+                            }
+                            ?>
+                        </div> -->
                     </div>
 
-                    <div class="modal-right">
-                        <div class="modal-header">
-                            <img src="img/default.png" width="40" class="profile-pic">
-                            <b id="modalUser"></b>
+                <?php endwhile; ?>
+
+                <!-- Post Modal -->
+                <div id="postModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close" onclick="closePostModal()">&times;</span>
+
+                        <div class="modal-left">
+                            <img id="modalImage" src="" alt="Post Image">
                         </div>
 
-                        <p id="modalCaption"></p>
+                        <div class="modal-right">
+                            <div class="modal-header">
+                                <img src="img/default.png" width="40" class="profile-pic">
+                                <b id="modalUser"></b>
+                            </div>
 
-                        <div class="modal-actions">❤️ 👍 💬</div>
+                            <p id="modalCaption"></p>
 
-                        <div class="modal-comments" id="modalComments"></div>
+                            <div class="modal-actions">❤️ 👍 💬</div>
 
-                        <form class="comment-form">
-                            <input type="text" placeholder="Add a comment...">
-                            <button type="submit">Post</button>
-                        </form>
+                            <div class="modal-comments" id="modalComments"></div>
+
+                            <form class="comment-form">
+                                <input type="text" placeholder="Add a comment...">
+                                <button type="submit">Post</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
+
             </div>
 
 
-
-
-
-
-        </div>
-
-        <div class="right-sidebar">
             <div class="right-sidebar">
                 <h3>Friend Requests</h3>
                 <div id="requestsTab" class="tab-content"></div>
 
-                <hr>
+               
 
                 <h3>Notifications</h3>
                 <div id="notificationsTab" class="tab-content"></div>
             </div>
 
+
+
         </div>
+
+
+
     </div>
 
     <script>
