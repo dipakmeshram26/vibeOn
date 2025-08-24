@@ -136,14 +136,22 @@ $result = $conn->query("
                             <span id="like-count-<?php echo $row['id']; ?>"><?php echo $row['like_count']; ?></span>
                         </div>
 
+                        <div>
+                            <a href="javascript:void(0);" onclick="openPostModal()">
+                                View Comments (<?php echo $row['comment_count']; ?>)
+                            </a>
+                        </div>
+                        
+                        <div>
+                            View Comments (<?php echo $row['comment_count']; ?> )
+                        </div>
+
                         <form class="comment-form" data-post-id="<?php echo $row['id']; ?>">
                             <input type="text" name="comment" placeholder="Add a comment..." required>
                             <button type="submit">Post</button>
                         </form>
 
-                        <div>
-                           View Comments (<?php echo $row['comment_count']; ?>)
-                        </div>
+
 
                         <!-- <div class="comments" id="comments-<?php echo $row['id']; ?>">
                             <?php
@@ -199,7 +207,7 @@ $result = $conn->query("
                 <h3>Friend Requests</h3>
                 <div id="requestsTab" class="tab-content"></div>
 
-               
+
 
                 <h3>Notifications</h3>
                 <div id="notificationsTab" class="tab-content"></div>
@@ -350,6 +358,7 @@ $result = $conn->query("
         function openPostModal(imageUrl, username, caption, postId) {
             document.getElementById("modalImage").src = imageUrl;
             document.getElementById("modalUser").innerText = username;
+            
             document.getElementById("modalCaption").innerText = caption;
 
             // Load comments dynamically if needed (AJAX call example)

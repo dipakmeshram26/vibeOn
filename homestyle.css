@@ -167,7 +167,7 @@ body {
 .post {
   background: #0c0c0c;
   border-radius: 12px;
-  box-shadow: 0 2px 15px rgb(7 22 226 / 92%);
+  box-shadow: 0 2px 15px rgb(3 8 75 / 92%);
   margin: 20px auto;
   max-width: 500px;
   overflow: hidden;
@@ -234,12 +234,12 @@ body {
 
 .comment-form input {
   flex: 1;
-    padding: 8px 12px;
-    border: 1px solid #1d1a1a;
-    border-radius: 20px;
-    background: black;
-    font-size: 14px;
-    outline: none;
+  padding: 8px 12px;
+  border: 1px solid #1d1a1a;
+  border-radius: 20px;
+  background: black;
+  font-size: 14px;
+  outline: none;
 }
 
 .comment-form button {
@@ -283,7 +283,8 @@ body {
 
 .modal-content {
   display: flex;
-  background: #fff;
+  background: #000000;
+  border: 1px solid #73726f;
   width: 80%;
   max-width: 900px;
   height: 80%;
@@ -367,7 +368,7 @@ body {
   border: 1px solid #0b008e;
 }
 
- 
+
 
 #requestsTab p {
   color: #696969;
