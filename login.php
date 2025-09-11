@@ -15,20 +15,23 @@ if (isset($_SESSION['user_id'])) {
 
 <body>
     <div class="log-cont">
+        <div class="log-right">
+            
+        </div>
+        <div class="log-left">
+            <h2>Login to VibeOn</h2>
+            <form action="login_process.php" method="POST">
+                <label>Username or Email:</label>
+                <input type="text" name="login_id" required><br><br>
 
+                <label>Password:</label>
+                <input type="password" name="password" required><br><br>
 
-        <h2>Login to VibeOn</h2>
-        <form action="login_process.php" method="POST">
-            <label>Username or Email:</label>
-            <input type="text" name="login_id" required><br><br>
-
-            <label>Password:</label>
-            <input type="password" name="password" required><br><br>
-
-            <button type="submit">Login</button>
-            <hr>
-            <p>Don't have an account? <a href="Signup.php">SignUp</a></p>
-        </form>
+                <button type="submit">Login</button>
+                <hr>
+                <p>Don't have an account? <a href="Signup.php">SignUp</a></p>
+            </form>
+        </div>
     </div>
 </body>
 
