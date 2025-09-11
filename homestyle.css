@@ -4,13 +4,94 @@ body {
   font-family: Arial, sans-serif;
 }
 
-.log-cont{
+.log-main{
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
+ overflow: hidden;
+}
+.log-cont{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
+    width: 100%;
+    max-width: 1000px;
   background: linear-gradient(135deg, #667eea, #764ba2);
 }
+
+.log-right{
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.log-right img{
+  width: auto;
+  height: 50vh;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.log-left{
+  width: 40%;
+  height: 90%;
+  margin: 10px;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(44, 44, 44, 0.447);
+  backdrop-filter: blur(10px);
+}
+
+.log-left form{
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  height: fit-content;
+}
+
+ 
+ 
+
+
+.log-left form input{
+  margin: 10px 0;
+  padding: 10px;
+  border: none;
+  border-radius: 50px;
+  font-size: 16px;
+}
+
+
+.mail {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.mail label {
+  position: absolute;
+  top: 19px;
+  left: 8px;
+  color: #1c1c1c;
+  font-size: 16px;
+  transition: 0.3s ease;
+  
+  pointer-events: none;   /* click input pe ho */
+}
+
+.mail label.focus {
+  top: -10px;
+  left: 6px;
+ 
+  color: #ffffff;
+  padding: 0 4px;
+}
+
 
 .stories-container {
   display: flex;
