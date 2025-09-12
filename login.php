@@ -19,21 +19,27 @@ if (isset($_SESSION['user_id'])) {
         <div class="log-cont">
 
             <div class="log-right">
-                <img src="img\posts\1754827015_5250f6e6-351b-4ed3-9245-ed4ec25f09e8.jpeg" alt="">
+                <img src="img\log img.png" alt="">
             </div>
+
             <div class="log-left">
-                <h2>Login to VibeOn</h2>
-                <form action="login_process.php" method="POST">
+                <h2>VibeOn</h2>
+                <form action="login_process.php" method="POST" class="log-form">
                     <div class="mail">
                         <label>Username or Email:</label>
-                        <input type="text" name="login_id" required><br><br>
+                        <input type="text" name="login_id" required>
+
                     </div>
                     <div class="mail">
                         <label>Password:</label>
-                        <input type="password" name="password" required><br><br>
+                        <input type="password" name="password" required>
+
                     </div>
-                    <button type="submit">Login</button>
-                    <hr>
+                    <div class="mail">
+                        <button type="submit">Login</button>
+
+                    </div>
+
                     <p>Don't have an account? <a href="Signup.php">SignUp</a></p>
                 </form>
             </div>

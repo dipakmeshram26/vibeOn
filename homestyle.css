@@ -15,14 +15,14 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 60vh;
+  height: 70vh;
     width: 100%;
-    max-width: 1000px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+    max-width: 1200px;
+    background: linear-gradient(135deg, #667eea26, #764ba200);
+    backdrop-filter: blur(60px);
 }
 
 .log-right{
-  
   display: flex;
   justify-content: center;
   align-items: center;
@@ -36,48 +36,45 @@ body {
 }
 
 .log-left{
-  width: 40%;
-  height: 90%;
-  margin: 10px;
-  padding: 5px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(44, 44, 44, 0.447);
-  backdrop-filter: blur(10px);
+    width: 40%;
+    height: 90%;
+    display: flex
+;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* background-color: rgba(20, 19, 19, 0.447); */
+    border-radius: 5px;
+    backdrop-filter: blur(20px);
 }
 
-.log-left form{
-  display: flex;
-  flex-direction: column;
-  width: 80%;
-  height: fit-content;
+.log-left h2{
+   margin-bottom: 46px;
+    color: #ffffff;
+    font-size: 2em;
+} 
+
+.log-left .log-form{
+     width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
-
- 
- 
-
-
-.log-left form input{
-  margin: 10px 0;
-  padding: 10px;
-  border: none;
-  border-radius: 50px;
-  font-size: 16px;
-}
-
-
-.mail {
-  position: relative;
-  margin-bottom: 20px;
+ .mail {
+    position: relative;
+    margin-bottom: 20px;
+    display: flex
+;
+    width: 75%;
+    justify-content: center;
+    align-items: center;
 }
 
 .mail label {
   position: absolute;
-  top: 19px;
-  left: 8px;
-  color: #1c1c1c;
+    top: 20px;
+    left: 16px;
+    color: #ffffff;
   font-size: 16px;
   transition: 0.3s ease;
   
@@ -85,12 +82,40 @@ body {
 }
 
 .mail label.focus {
-  top: -10px;
+  top: -16px;
   left: 6px;
  
   color: #ffffff;
   padding: 0 4px;
 }
+ 
+
+
+.log-left .log-form .mail input{
+       margin: 10px 0;
+    padding: 10px;
+    width: 100%;
+    border: 1px solid #ffffff3b;
+    border-radius: 50px;
+    color: white;
+    font-size: 16px;
+    background: #49474757;
+}
+
+
+.log-left .log-form .mail button{
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 50px;
+  font-size: 16px;
+  background: #0b0190;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+ 
 
 
 .stories-container {
