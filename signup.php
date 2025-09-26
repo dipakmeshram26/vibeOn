@@ -9,6 +9,8 @@
 <body>
     <div id="registration">
         <div id="signup">
+
+
             <h2>Create Account</h2>
             <form action="signup_process.php" method="POST" enctype="multipart/form-data">
                 Full Name: <input type="text" name="full_name" required><br><br>
@@ -29,6 +31,7 @@
                 <button type="submit">Sign Up</button>
             </form>
         </div>
+
     </div>
 </body>
 
