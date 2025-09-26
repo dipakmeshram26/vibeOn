@@ -4,6 +4,22 @@ body {
   font-family: Arial, sans-serif;
 }
 
+
+
+/* registration  */
+
+#registration{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #0e0122;
+}
+
+
+
+/* log in form  */
+
 .log-main{
   display: flex;
   justify-content: center;
