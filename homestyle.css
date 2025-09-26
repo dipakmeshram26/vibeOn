@@ -13,6 +13,15 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  height: 100vh;
+  
+}
+
+#signup{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   background: #0e0122;
 }
 
